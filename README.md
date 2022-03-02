@@ -1,0 +1,2 @@
+# ezdot
+dotfiles manager tool
