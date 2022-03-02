@@ -290,30 +290,30 @@ def process(*argv):
     elif cmd == "dlinkx":
         dotfiles_path = current_dir #add support for symlinking folders
         symlink_dir(dotfiles_path)
-      elif cmd == "upload":
+    elif cmd == "upload":
             # if config_path.is_file():  # add check if empty here
                 # dotfiles_path = config_path.read_text()
-            dotfiles_path = dotfiles_dir
-            cmdout = subprocess.run(
-                ["git", "add", "."], cwd=dotfiles_path, stdout=subprocess.PIPE
-            ).stdout.decode("utf-8")
-            print(cmdout)
-            cmdout = subprocess.run(
-                ["git", "commit", "-m", '"ezdot dotfile update"'],
-                cwd=dotfiles_path,
-                stdout=subprocess.PIPE,
-            ).stdout.decode("utf-8")
-            print(cmdout)
-            cmdout = subprocess.run(
-                ["git", "push"], cwd=dotfiles_path, stdout=subprocess.PIPE
-            ).stdout.decode("utf-8")
-            print(cmdout)
-            print("UPLOADED")
-            return False
+        dotfiles_path = dotfiles_dir
+        cmdout = subprocess.run(
+            ["git", "add", "."], cwd=dotfiles_path, stdout=subprocess.PIPE
+        ).stdout.decode("utf-8")
+        print(cmdout)
+        cmdout = subprocess.run(
+            ["git", "commit", "-m", '"ezdot dotfile update"'],
+            cwd=dotfiles_path,
+            stdout=subprocess.PIPE,
+        ).stdout.decode("utf-8")
+        print(cmdout)
+        cmdout = subprocess.run(
+            ["git", "push"], cwd=dotfiles_path, stdout=subprocess.PIPE
+        ).stdout.decode("utf-8")
+        print(cmdout)
+        print("UPLOADED")
+        return False
             # else:
                 # print("Empty Config")
                 # return False
-        elif cmd == "push":
+    elif cmd == "push":
         if config_path.is_file():  # add check if empty here
             dotfiles_path = config_path.read_text()
             cmdout = subprocess.run(
