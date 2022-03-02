@@ -15,6 +15,7 @@ config_default = {
     "home_files": [],
     "home_folders": [],
     "home_symlink": [],
+    "dotfiles_dir": [home_dir / ".dotfiles"],
 }
 config_path = home_dir / ".config" / config_dir_name / config_file_name
 cfg = Config(config_path, config_default)
