@@ -3,7 +3,7 @@ import json
 import sys
 import subprocess
 import os
-from config import Config
+from ezdot.config import Config
 import shutil
 home_dir = Path.home()
 current_dir = Path.cwd()
