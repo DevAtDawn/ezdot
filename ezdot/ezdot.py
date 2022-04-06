@@ -449,6 +449,7 @@ def symlink_dir(dotfiles_path):
             # print(path)
     print(directories)
     for y in directories:
+        print('dirsy', y)
         dir_name = y.name
         dir_in = Path(y)
         # dir_in = dotfiles_path / Path(y)
