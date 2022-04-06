@@ -549,23 +549,24 @@ def sync_home_folders(dotfiles_path):
                 print(' LINKED ')
             else:
                 print(dir_out, ' EXISTS ')
-                uin = input('Rename or Merge? (y/n/m) ')
-                if uin == 'y':
-                    setup_sym_dir(dir_out, dir_name)
-                    make_links(dir_in, dir_out)
+               # pass
+                 # uin = input('Rename or Merge? (y/n/m) ')
+                # if uin == 'y':
+                #     setup_sym_dir(dir_out, dir_name)
+                #     make_links(dir_in, dir_out)
 
-                    # rename_dir(dir_out, dir_name)
-                    # Path(dir_out).symlink_to(dir_in)
-                    print(' LINKED ')
-                elif uin == 'm':
-                    import shutil
-                    shutil.copytree(dir_out, dir_in)
-                    setup_sym_dir(dir_out, dir_name)
-                    make_links(dir_in, dir_out)
-                    # shutil.copytree(dir_in, dir_out)
-                    # shutil.copytree(src, dst, symlinks=False, ignore=None, copy_function=copy2, ignore_dangling_symlinks=False, dirs_exist_ok=False
-                else:
-                    print(' SKIPPED ')
+                #     # rename_dir(dir_out, dir_name)
+                #     # Path(dir_out).symlink_to(dir_in)
+                #     print(' LINKED ')
+                # elif uin == 'm':
+                #     import shutil
+                #     shutil.copytree(dir_out, dir_in)
+                #     setup_sym_dir(dir_out, dir_name)
+                #     make_links(dir_in, dir_out)
+                #     # shutil.copytree(dir_in, dir_out)
+                #     # shutil.copytree(src, dst, symlinks=False, ignore=None, copy_function=copy2, ignore_dangling_symlinks=False, dirs_exist_ok=False
+                # else:
+                #     print(' SKIPPED ')
 
         except:
             pass
