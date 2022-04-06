@@ -240,7 +240,8 @@ def process(*argv):
     elif cmd == "add_to_folders":
         src = arg2
         if data:=cfg.Read():
-            dst = data['folers'][0]
+            dst = data['folders'][0]
+            # dst = data['folers'][0]
             copy_to(src, dst)
     elif cmd == "add_to_home_files":
         src = arg2
