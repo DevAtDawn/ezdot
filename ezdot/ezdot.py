@@ -32,7 +32,7 @@ else:
         pass
     elif answer == 'n':
         cfg.error('cfg setup error')
-commands = ["rm", "add", "addD", "addF","reset", "loadx", "load", "sync", "push", "help", "setup", "link", "pull", "add", "dlinkx","flinkx", "auto_setup", "default_setup", "folders","files","home_files","home_folders","home_symlink", "add_to_files", "add_to_folders" , "add_to_home_files", "add_to_home_folders", "add_to_home_symlink", "set_folders","set_files","set_home_files","set_home_folders","set_home_symlink", "add_to_files", "add_to_folders" , "add_to_home_files", "add_to_home_folders", "add_to_home_symlink", "backup_config"]
+commands = ["refresh","set_dir", "rm", "add", "addD", "addF","reset", "loadx", "load", "sync", "push", "help", "setup", "link", "pull", "add", "dlinkx","flinkx", "auto_setup", "default_setup", "folders","files","home_files","home_folders","home_symlink", "add_to_files", "add_to_folders" , "add_to_home_files", "add_to_home_folders", "add_to_home_symlink", "set_folders","set_files","set_home_files","set_home_folders","set_home_symlink", "add_to_files", "add_to_folders" , "add_to_home_files", "add_to_home_folders", "add_to_home_symlink", "backup_config"]
  
 if data:=cfg.Read():
     if data['dotfiles_dir'] == []:
@@ -50,16 +50,35 @@ def set_dotfiles_dir():
     path = str(current_dir)
     if data:=cfg.Read():
         x = data['dotfiles_dir']
-        x.pop[0]
-        x.insert(0, path)
-        
-        # if path not in x:
-            # x.append(path)
-        if cfg.Write(data):
-            print('dotdirpath', cfg.Read())
-        else:
-            print('dotdirpath ERRor')
-
+        if path not in x:
+            x.clear()
+            x.append(path)
+            if cfg.Write(data):
+                print('dotdirpath', cfg.Read())
+            else:
+                print('dotdirpath ERRor')
+def refresh_dots():
+    if data:=cfg.Read():
+        fi = data['files']
+        fo = data['folders']
+        z = data['home_symlink']
+        q = data['home_files']
+        y = data['home_folders']
+        for x in fi:
+            unsync_dotfiles(x)
+            # unlink_dir(Path(x))
+        for x in fo:
+            unsync_dotfiles(x)
+            unlink_dir(Path(x))
+        for x in z:
+            # unsync_dotfiles(x)
+            unlink_dir(Path(x))
+        for x in q:
+            unsync_dotfiles(x)
+            # unlink_dir(Path(x))
+        for x in y:
+            unsync_dotfiles(x)
+            unlink_dir(Path(x))
 
 
 def main():
@@ -91,6 +110,8 @@ def process(*argv):
         print(argv, arg2, cmd)
     except:
         print(argv)
+    if cmd == "refresh":
+        refresh_dots()
     if cmd == "set_dir":
         set_dotfiles_dir()
     if cmd == "link":
@@ -110,7 +131,9 @@ def process(*argv):
                 sync_home_folders(dotfiles_path_hfo)
             for x in data['folders']:
                 print(x)
+                # dotfiles_path_fo = x
                 dotfiles_path_fo = Path(x)
+                print(dotfiles_path_fo)
                 # dotfiles_path_fo = Path(x)
                 symlink_dir(dotfiles_path_fo) 
             for x in data['home_symlink']:
@@ -313,8 +336,36 @@ def process(*argv):
     elif cmd == "reset":
         cfg.Reset()
     elif cmd == "load":
-        file = current_dir / ".config" / "ezdot" / "ezdot.json"
-        cfg.Load(file)
+        try:
+            if arg2 != None:
+                file = Path(arg2)
+                print('arg not none', arg2, file, file.name)
+                if file.name == 'ezdot.json':
+                    print('loading', file)
+                    cfg.Load(file)
+                else:
+                    print('not ezdot.json')
+                    raise Exception
+                # cfg.Load(file)
+        except:
+            print('arg none')
+            # cfg.Load(arg2)
+        # else:
+            # cfg.Load()
+            try:
+                file = current_dir / ".config" / "ezdot" / "ezdot.json"
+                cfg.Load(file)
+            except:
+                try:
+                    file = current_dir / "ezdot.json"
+                    cfg.Load(file)
+                except:
+                    try:
+                        user_input = input("Enter Config Path: ")
+                        file = current_dir / Path(user_input)
+                        cfg.Load(file)
+                    except:
+                        pass
     elif cmd == "loadx":
         user_input = input("Enter Config Path: ")
         file = current_dir / Path(user_input)
@@ -324,6 +375,7 @@ def process(*argv):
         sync_dotfiles(dotfiles_path)
     elif cmd == "dlinkx":
         dotfiles_path = current_dir #add support for symlinking folders
+        print(dotfiles_path)
         symlink_dir(dotfiles_path)
     elif cmd == "upload":
             # if config_path.is_file():  # add check if empty here
@@ -389,11 +441,18 @@ def process(*argv):
 def copy_to(src, dst):
     shutil.copy(src, dst)  # dst can be a folder; use shutil.copy2() to preserve timestamp
 def symlink_dir(dotfiles_path):
-    directories=[d for d in os.listdir(dotfiles_path) if os.path.isdir(d)]
+    # directories=[d for d in os.listdir(dotfiles_path) if os.path.isdir(d)]
+    # directories=[d for d in os.listdir(dotfiles_path) if os.path.isdir(d)]
+    directories = [ ppath for ppath in Path(dotfiles_path).iterdir() if ppath.is_dir() ]
+        # if ppath.is_dir():
+            # print(path)
+    print(directories)
     for y in directories:
-        dir_name = y
-        dir_in = dotfiles_path / Path(y)
+        dir_name = y.name
+        dir_in = Path(y)
+        # dir_in = dotfiles_path / Path(y)
         dir_out = home_dir / dir_name
+        print(dir_name, dir_in, dir_out)
         setup_sym_dir(dir_out, dir_name)
         make_links(dir_in, dir_out)
         print("Synced Dirs")
@@ -487,6 +546,8 @@ def sync_home_folders(dotfiles_path):
             if not Path(dir_out).exists():
                 Path(dir_out).symlink_to(dir_in)
                 print(' LINKED ')
+            else:
+                print(dir_out, ' EXISTS ')
         except:
             pass
 def check_home_fo(thefile, dir_name):
