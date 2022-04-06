@@ -79,7 +79,7 @@ def refresh_dots():
         for x in y:
             unsync_dotfiles(x)
             unlink_dir(Path(x))
-        process("link")
+        # process("link")
 
 
 def main():
