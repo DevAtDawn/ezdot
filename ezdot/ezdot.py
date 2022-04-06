@@ -32,7 +32,7 @@ else:
         pass
     elif answer == 'n':
         cfg.error('cfg setup error')
-commands = ["refresh","set_dir", "rm", "add", "addD", "addF","reset", "loadx", "load", "sync", "push", "help", "setup", "link", "pull", "add", "dlinkx","flinkx", "auto_setup", "default_setup", "folders","files","home_files","home_folders","home_symlink", "add_to_files", "add_to_folders" , "add_to_home_files", "add_to_home_folders", "add_to_home_symlink", "set_folders","set_files","set_home_files","set_home_folders","set_home_symlink", "add_to_files", "add_to_folders" , "add_to_home_files", "add_to_home_folders", "add_to_home_symlink", "backup_config"]
+commands = ["upload", "refresh","set_dir", "rm", "add", "addD", "addF","reset", "loadx", "load", "sync", "push", "help", "setup", "link", "pull", "add", "dlinkx","flinkx", "auto_setup", "default_setup", "folders","files","home_files","home_folders","home_symlink", "add_to_files", "add_to_folders" , "add_to_home_files", "add_to_home_folders", "add_to_home_symlink", "set_folders","set_files","set_home_files","set_home_folders","set_home_symlink", "add_to_files", "add_to_folders" , "add_to_home_files", "add_to_home_folders", "add_to_home_symlink", "backup_config"]
  
 if data:=cfg.Read():
     if data['dotfiles_dir'] == []:
@@ -549,6 +549,24 @@ def sync_home_folders(dotfiles_path):
                 print(' LINKED ')
             else:
                 print(dir_out, ' EXISTS ')
+                uin = input('Rename or Merge? (y/n/m) ')
+                if uin == 'y':
+                    setup_sym_dir(dir_out, dir_name)
+                    make_links(dir_in, dir_out)
+
+                    # rename_dir(dir_out, dir_name)
+                    # Path(dir_out).symlink_to(dir_in)
+                    print(' LINKED ')
+                elif uin == 'm':
+                    import shutil
+                    shutil.copytree(dir_out, dir_in)
+                    setup_sym_dir(dir_out, dir_name)
+                    make_links(dir_in, dir_out)
+                    # shutil.copytree(dir_in, dir_out)
+                    # shutil.copytree(src, dst, symlinks=False, ignore=None, copy_function=copy2, ignore_dangling_symlinks=False, dirs_exist_ok=False
+                else:
+                    print(' SKIPPED ')
+
         except:
             pass
 def check_home_fo(thefile, dir_name):
