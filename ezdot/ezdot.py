@@ -458,6 +458,8 @@ def symlink_dir(dotfiles_path):
         setup_sym_dir(dir_out, dir_name)
         make_links(dir_in, dir_out)
         print("Synced Dirs")
+
+ 
 def link_dir(dotfiles_path):
     dir_name = dotfiles_path.name
     dir_in = dotfiles_path
