@@ -9,7 +9,9 @@ home_dir = Path.home()
 current_dir = Path.cwd()
 config_file_name = "ezdot.json"
 config_dir_name = "ezdot"
+dotfiles_dir = home_dir / ".dotfiles"
 config_default = {
+    "dotfiles_dir": [],
     "files": [],
     "folders": [],
     "home_files": [],
@@ -18,7 +20,6 @@ config_default = {
 }
     # "dotfiles_dir": [home_dir / ".dotfiles"],
 # }
-dotfiles_dir = home_dir / ".dotfiles"
 
 config_path = home_dir / ".config" / config_dir_name / config_file_name
 cfg = Config(config_path, config_default)
@@ -32,6 +33,35 @@ else:
     elif answer == 'n':
         cfg.error('cfg setup error')
 commands = ["rm", "add", "addD", "addF","reset", "loadx", "load", "sync", "push", "help", "setup", "link", "pull", "add", "dlinkx","flinkx", "auto_setup", "default_setup", "folders","files","home_files","home_folders","home_symlink", "add_to_files", "add_to_folders" , "add_to_home_files", "add_to_home_folders", "add_to_home_symlink", "set_folders","set_files","set_home_files","set_home_folders","set_home_symlink", "add_to_files", "add_to_folders" , "add_to_home_files", "add_to_home_folders", "add_to_home_symlink", "backup_config"]
+ 
+if data:=cfg.Read():
+    if data['dotfiles_dir'] == []:
+        dotfiles_dir = home_dir / ".dotfiles"
+        print('no dotfiles_dir')
+    else:
+        for x in data['dotfiles_dir']:
+            print('dotdir ',x)
+            dotfiles_dir = Path(x)
+
+def set_dotfiles_dir():
+    global dotfiles_dir
+    dotfiles_dir = Path.cwd()
+    #home_dir / ".dotfiles"
+    path = str(current_dir)
+    if data:=cfg.Read():
+        x = data['dotfiles_dir']
+        x.pop[0]
+        x.insert(0, path)
+        
+        # if path not in x:
+            # x.append(path)
+        if cfg.Write(data):
+            print('dotdirpath', cfg.Read())
+        else:
+            print('dotdirpath ERRor')
+
+
+
 def main():
     try:
         user_input = sys.argv[1]
@@ -61,6 +91,8 @@ def process(*argv):
         print(argv, arg2, cmd)
     except:
         print(argv)
+    if cmd == "set_dir":
+        set_dotfiles_dir()
     if cmd == "link":
         if data:=cfg.Read():
             print('yesss')
@@ -79,6 +111,7 @@ def process(*argv):
             for x in data['folders']:
                 print(x)
                 dotfiles_path_fo = Path(x)
+                # dotfiles_path_fo = Path(x)
                 symlink_dir(dotfiles_path_fo) 
             for x in data['home_symlink']:
                 print(x)
